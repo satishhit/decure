@@ -1,0 +1,390 @@
+<?php $block->renderFileLessToCss(); ?>
+
+<!-- Google Tag Manager -->
+
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+
+})(window,document,'script','dataLayer','GTM-NPML4S4');
+
+
+ga('send', 'pageview');
+ga('send', 'event', 'eventCategory', 'eventAction');
+
+</script>
+<script src="https://raw.githubusercontent.com/robflaherty/jquery-scrolldepth/master/jquery.scrolldepth.min.js"></script>
+<script>
+jQuery(function() {
+  jQuery.scrollDepth();
+});
+</script>
+<!-- End Google Tag Manager -->
+<header id="lucian_header123" class="header-container">
+
+
+	<div class="header-top">
+
+
+		<div class="container-fluid">
+
+
+			<div class="col-md-4 col-xs-12">
+
+
+				<?php echo $this->getLayout()->createBlock('Magento\Cms\Block\Block')->setBlockId('header_phone')->toHtml();?>			
+
+
+			</div>
+
+
+			<div class="col-md-3 col-md-offset-1 col-xs-12">
+
+
+				<?php echo $this->getChildHtml("logo"); ?>
+
+
+			</div>
+
+
+			
+
+
+			<div class="col-md-4 col-xs-12">
+
+
+					<div class="options-group" >
+
+
+						<div class="setting-group hidden-sm hidden-xs " data-block="setting">
+
+
+							<div class="dynamic-links"><span><?php /* @escapeNotVerified */ echo __('My Account'); ?> <i class="fa fa-caret-down"></i>
+							</span></div>
+
+
+							
+
+
+							<div class="link-lang-current" 
+
+
+							data-role="dropdownDialog"
+
+
+							data-mage-init='{"dropdownDialog":{
+
+
+							"appendTo":"[data-block=setting]",
+
+
+							"triggerTarget":".dynamic-links",
+
+
+							"timeout": "2000",
+
+
+							"closeOnMouseLeave": false,
+
+
+							"closeOnEscape": true,
+
+
+							"triggerClass":"active",
+
+
+							"parentClass":"active",
+
+
+							"buttons":[]}}'>
+
+
+							
+
+
+								<?php echo $this->getChildHtml("header.links"); ?>
+
+
+								<?php //echo $this->getChildHtml("store_language"); ?>
+
+
+								<?php //echo $this->getChildHtml("currency"); ?>
+
+
+								
+
+
+								
+
+
+								
+
+
+							</div>
+
+
+						</div>
+
+
+						<?php echo $this->getChildHtml("minicart");?>
+
+
+						
+
+
+				</div>
+
+
+			</div>
+
+
+		
+
+
+		</div>
+
+
+	</div>
+
+
+	<div class="header-content">
+
+
+		<div class="container-fluid">
+
+
+			<div class="row">
+
+
+				<!--<div class="col-md-2 col-sm-6 col-xs-12">
+
+
+					<div class="mobile-bar-icon"><span><?php /* @escapeNotVerified */ //echo __('mobile icon'); ?></span></div>
+
+
+					<!--<div class="logo-home">
+
+
+						<?php //echo $this->getChildHtml("logo"); ?>
+
+
+					</div>
+
+
+					
+
+
+				</div>-->
+
+
+				
+
+
+				<div class="col-right col-md-12 col-sm-6 col-xs-12">
+
+
+					<div class="mobile-bar-icon"><span><?php /* @escapeNotVerified */ echo __('mobile icon'); ?></span></div>
+
+
+				
+
+
+					<?php echo $this->getChildHtml("hozmegamenu_top"); ?>
+
+
+					<div class="options-group" >
+
+
+						
+
+
+						<?php echo $this->getChildHtml("top.search"); ?>
+
+
+					</div>
+
+
+					
+
+
+				</div>
+
+
+			</div>
+
+
+		</div>
+
+
+		<div class="mobile-bar-content">
+
+
+			<div class ="mobile-bar-close"><?php /* @escapeNotVerified */ echo __('Close'); ?></div>
+
+
+			<div class="content-inner">	
+
+
+				<ul class = "tabs-mobile">
+
+
+					<li class="item item-menu"><?php /* @escapeNotVerified */ echo __('Menu'); ?></li>
+
+
+					<li class="item item-account"><?php /* @escapeNotVerified */ echo __('Account'); ?></li>
+
+
+					<li class="item item-setting"><?php /* @escapeNotVerified */ //echo __('Setting'); ?></li>
+
+
+				</ul>
+
+
+				<div class="tabs-content-mobile tabs-menu">
+
+
+					<?php echo $this->getChildHtml("mobilemenu"); ?>
+
+
+				</div>
+
+
+				<div class="tabs-content-mobile tabs-account" style="display:none;">
+
+
+					<?php echo $this->getChildHtml("header.links"); ?>
+
+
+				</div>
+
+
+				<div class="tabs-content-mobile tabs-setting" style="display:none;">
+
+
+					<?php //echo $this->getChildHtml("store_language_mobile"); ?>
+
+
+					<?php //echo $this->getChildHtml("currency_mobile"); ?>
+
+
+				</div>
+
+
+			</div>
+
+
+		</div>
+
+
+	</div>
+
+
+</header>
+
+
+<script type="text/javascript">
+
+
+require(["jquery"], function($){
+
+
+	$(document).ready(function(){
+
+
+		<!-- show, hide mobile bar content -->
+
+
+		$(".mobile-bar-icon").click(function(){
+
+
+			$(".mobile-bar-content").addClass("open");
+
+
+		});
+
+
+		$(".mobile-bar-close").click(function(){
+
+
+			$(".mobile-bar-content").removeClass("open");
+
+
+		});
+
+
+		
+
+
+		<!-- choose tabs-->
+
+
+		$(".tabs-mobile .item-menu").addClass("active");
+
+
+		$(".tabs-mobile .item").click(function(){
+
+
+			$(".tabs-mobile .item").removeClass("active");
+
+
+			$(this).addClass("active");
+
+
+		});
+
+
+		$(".tabs-mobile .item-menu").click(function(){
+
+
+			$(".tabs-content-mobile").css("display","none");
+
+
+			$(".tabs-menu").css("display","block");
+
+
+		});
+
+
+		$(".tabs-mobile .item-account").click(function(){
+
+
+			$(".tabs-content-mobile").css("display","none");
+
+
+			$(".tabs-account").css("display","block");
+
+
+		});
+
+
+		$(".tabs-mobile .item-setting").click(function(){
+
+
+			$(".tabs-content-mobile").css("display","none");
+
+
+			$(".tabs-setting").css("display","block");
+
+
+		});
+
+
+		
+
+
+	});
+
+
+});
+
+
+</script>
+
+
+
+
+

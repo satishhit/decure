@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<form xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd">
+    <fieldset name="general">
+        <field name="enable_buying_assistance">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="dataType" xsi:type="string">boolean</item>
+                    <item name="formElement" xsi:type="string">checkbox</item>
+                    <item name="label" xsi:type="string" translate="true">Enable Buying Assistance</item>
+                    <item name="prefer" xsi:type="string">toggle</item>
+                    <item name="valueMap" xsi:type="array">
+                        <item name="true" xsi:type="string">1</item>
+                        <item name="false" xsi:type="string">0</item>
+                    </item>
+                    <item name="default" xsi:type="number">0</item>
+                </item>
+            </argument>
+        </field>
+		
+        <field name="buying_assistance_layout">
+			<argument name="data" xsi:type="array">
+				<item name="options" xsi:type="object">Ash\Catalog\Model\Config\Source\Layout</item>	
+                <item name="config" xsi:type="array">
+                    <item name="sortOrder" xsi:type="number">30</item>
+                    <item name="dataType" xsi:type="string">string</item>
+                    <item name="formElement" xsi:type="string">select</item>
+                    <item name="label" xsi:type="string" translate="true">Buying Assistance Layout</item>
+                </item>
+            </argument>            
+        </field>
+		
+        <field name="sets_for_buying_guide">
+            <argument name="data" xsi:type="array">
+				<item name="options" xsi:type="object">Ash\Catalog\Model\Config\Source\Sets</item>
+                <item name="config" xsi:type="array">
+                    <item name="sortOrder" xsi:type="number">60</item>
+                    <item name="dataType" xsi:type="string">string</item>
+                    <item name="formElement" xsi:type="string">multiselect</item>
+                    <item name="label" xsi:type="string" translate="true">Attribute Sets for Buying Guide</item>
+                </item>
+            </argument>
+        </field>
+    </fieldset>
+</form>

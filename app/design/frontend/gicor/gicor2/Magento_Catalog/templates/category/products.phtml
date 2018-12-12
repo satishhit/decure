@@ -1,0 +1,487 @@
+<?php
+
+/**
+
+ * Copyright © 2016 Magento. All rights reserved.
+
+ * See COPYING.txt for license details.
+
+ */
+
+
+
+// @codingStandardsIgnoreFile
+
+
+
+?>
+
+<?php
+
+/**
+
+ * Category view template
+
+ *
+
+ * @var $block \Magento\Catalog\Block\Category\View
+
+ */
+
+?>
+
+<?php if (!$block->isContentMode() || $block->isMixedMode()): ?>
+	<?php 
+			$moduleName = $this->getRequest()->getModuleName();
+        $controller = $this->getRequest()->getControllerName();
+        $action     = $this->getRequest()->getActionName();
+        if ($moduleName == "catalog" && $controller == "category" && $action == "view") {
+			
+		   $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+		   $category = $objectManager->get('Magento\Framework\Registry')->registry('current_category');//get current category
+		   
+		   $showAllUrl = "http://decure.in/demo/catalog/category/view/id/".$category->getId()."/s/a";
+		   $allParam  = $block->getRequest()->getParam('s');
+		   
+		   $mediaUrl =  $objectManager->get('Magento\Store\Model\StoreManagerInterface')
+                    ->getStore()
+                    ->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_MEDIA);
+					
+					
+		   if($category->getEnableBuyingAssistance() && $category->getId() && $allParam != 'a') {
+			   echo '<input type="hidden" id="catTypeCheck" value="buyingguide">';
+			    //exit('In');
+				$category->getId();
+				$category->getEnableBuyingAssistance();
+				$category->getBuyingAssistanceLayout();
+				//Adding Connections
+				$resource = $objectManager->get('Magento\Framework\App\ResourceConnection');
+				$connection = $resource->getConnection();
+				//End
+				$display = [];
+				foreach($category->getSetsForBuyingGuide() as $attributeSetId){
+					
+					$sql = "SELECT * FROM eav_entity_attribute eea
+					INNER JOIN eav_attribute e ON eea.attribute_id = e.attribute_id
+					WHERE eea.attribute_set_id = ".$attributeSetId." ORDER BY e.sort_order_n ASC";
+					$allSetsAttributes = $connection->fetchAll($sql); 
+					foreach ($allSetsAttributes as $setAttribute) {
+						$attributeId = $setAttribute['attribute_id'];
+						$sql = "SELECT * FROM eav_attribute e 
+						WHERE e.attribute_id = ".$attributeId." AND e.use_in_byuing_guide = 1 ORDER BY sort_order_n ASC";
+						/*echo '<br>'.$sql = "SELECT e.*,o.*,ov.* FROM eav_attribute e 
+						INNER JOIN eav_attribute_option o ON e.attribute_id = o.attribute_id
+						INNER JOIN eav_attribute_option_value ov ON ov.option_id = o.option_id
+						WHERE e.attribute_id = ".$attributeId." AND o.attribute_id = ".$attributeId;*/
+						$result = $connection->fetchAll($sql);
+						if(count($result) > 0){
+							foreach ($result as $attributeDetails) {
+								//$display['attribute_id'][] = $attributeDetails['attribute_id'];
+								$sql = "SELECT o.*,ov.* FROM eav_attribute_option o
+								INNER JOIN eav_attribute_option_value ov ON ov.option_id = o.option_id
+								WHERE ov.store_id = 2 AND o.attribute_id = ".$attributeDetails['attribute_id']." ORDER BY o.sort_order ASC";
+								
+								$result = $connection->fetchAll($sql);
+								if(count($result) > 0){
+									$display['attribute_id']['attribute_option'][$attributeId] = $result;	
+									$display['attribute_id']['attribute_option'][$attributeId]['dis_label'] = 	$attributeDetails['frontend_label'];
+									$display['attribute_id']['attribute_option'][$attributeId]['attribute_code'] = 	$attributeDetails['attribute_code'];$display['attribute_id']['attribute_option'][$attributeId]['frontend_input'] = 	$attributeDetails['frontend_input'];
+									$display['attribute_id']['attribute_option'][$attributeId]['narration'] = 	$attributeDetails['narration'];
+									$display['attribute_id']['attribute_option'][$attributeId]['additional_description'] = 	$attributeDetails['additional_description'];
+								}
+							}
+						}
+					}
+				}	
+				if(isset($display['attribute_id'])) {
+					foreach ($display as $attributeDetails){
+						foreach ($attributeDetails as $attributeId => $attributeOptions) {
+							$i = 0;
+							foreach ($attributeOptions as $optionKey => $optionDetails) {
+								$i++;
+								//echo '<pre>-------------KEY 111111111111 --------------<br>';
+								//print_r($optionKey);
+								
+								//echo '<pre>-------------VAL 111111111111 --------------<br>';
+								//print_r($optionDetails);
+								
+								echo '<h2 class="big-text col-xs-12 col-lg-12 col-sm-12" style="padding-left:0;"> Shop By '.$optionDetails['dis_label'].'</h2>';
+							?>
+							    <?php if($optionDetails['narration'] != 0 || $optionDetails['narration'] != '') {?>
+							    <h2 style="margin-bottom: 1%;"><?php echo ($optionDetails['narration'] != 0 || $optionDetails['narration'] != '')?$optionDetails['narration']:'';?></h2>
+								<?php } 
+								if ($optionDetails['additional_description'] != 0 || $optionDetails['additional_description'] != '') {
+								?>
+								<p class="description_para"><?php echo ($optionDetails['additional_description'] != 0 || $optionDetails['additional_description'] != '')?$optionDetails['additional_description']:'';?></p>
+								<?php } ?>
+								<ul class="custom_attribute_ul">
+							<?php
+								foreach ($optionDetails as $key => $optionValues) {
+									if (isset($optionValues['use_in_guide'])) {
+									if ($optionValues['use_in_guide'] != '0' || $optionValues['use_in_guide'] != 0) {
+									if (isset($optionValues['image'])) {
+										?>
+										<li class="option_value_list" optionval="<?php echo $optionValues['option_id'];?>" id="option_value_<?php echo $optionValues['option_id'];?>" attcode="<?php echo $optionDetails['attribute_code'];?>" fieldtype="<?php echo $optionDetails['frontend_input'];?>">
+											<?php if ($optionValues['image'] == 0 || $optionValues['image'] == ''){?>
+												<div class="without_image" style="text-align:center;border:1px solid #000;padding: 20%;margin: 2%;"><?php echo ($optionValues['value'] != 0 || $optionValues['value'] != '')?$optionValues['value']:'';?></div>
+											<?php } else {?>
+											<img src="<?php echo $mediaUrl.'attribute/options/'.$optionValues['image'];?>">
+											<h4 style="margin-top:0.5%;font-size: 13px;"><?php echo ($optionValues['value'] != 0 || $optionValues['value'] != '')?$optionValues['value']:'';?></h4>
+											<?php
+											}
+												if ($optionValues['description'] != '0') {
+													echo '<div class="item_description"><div class="description_data">'.$optionValues['description'].'</div></div>';
+												} else {
+													echo '';	
+												}
+											?>
+											<br>
+										<?php												
+										}
+										?>
+										</li>
+									<?php
+									}
+									}
+								}
+							?>
+								</ul>
+							<?php	
+							}							
+						}
+					}
+				}				
+			} else {?>
+			<?php echo $block->getProductListHtml() ?> 
+		<?php	}				
+		} else {
+			    
+		?>
+    <?php echo $block->getProductListHtml() ?> 
+	<?php
+			}
+	?>
+
+<?php endif; ?>
+<style>
+
+.custom_attribute_ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: unset;
+}
+
+.custom_attribute_ul li {
+    float: left;
+	width:33% !important;
+	cursor:pointer;
+	padding: 0%;
+	text-align: center;
+}
+
+.custom_attribute_ul li a {
+    display: block;
+    text-align: center;
+    padding: 0;
+    text-decoration: none;
+}
+
+.custom_attribute_ul img 
+{
+	width:93% !important;
+}
+.custom_attribute_ul li h4
+{
+	text-align:center !important;
+	padding-top: 3%;
+}
+.item_description
+{
+	width: 100%;
+	margin: 0 auto;
+	line-height: normal;
+}
+.description_data {
+
+    width: 80%;
+    margin: 0 auto;
+	font-family: Lato,sans-serif;
+	color: #555 !important;
+	font-size: 12px !important;
+	font-weight: 500 !important;
+	line-height: 16px !important;
+	text-align: center !important;
+}
+.description_para {
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    line-height: 16px !important;
+    margin-bottom: 20px !important;
+    margin-top: 5px !important;
+    color: #555 !important;
+    clear:both;
+}
+@media only screen and (min-device-width : 320px) and (max-device-width : 480px) {
+        .attributes_wrapper
+		{
+            display:none;
+		}
+		.custom_attribute_ul li
+		{
+			width: 50% !important;
+		}
+		.description_data
+		{
+			width: 96%;
+			margin: 0 auto;
+			font-family: Lato,sans-serif;
+			color: #555 !important;
+			font-size: 12px !important;
+			font-weight: 500 !important;
+			line-height: 16px !important;
+			text-align: center !important;
+		}
+    }
+@media only screen and (min-device-width : 412px) and (max-device-width : 414px) {  
+      .description_data {
+        width: 86%;
+      }
+}
+
+@media only screen and (min-device-width : 375px) and (max-device-width : 375px) {  
+      .description_data {
+        width: 96%;
+      }
+}
+
+@media only screen and (min-device-width : 384px) and (max-device-width : 384px) {  
+      .description_data {
+        width: 94%;
+      }
+}
+
+@media only screen and (min-device-width : 991px) and (max-device-width : 1199px) {
+        .col-md-3 {
+            width: 30%;
+        }
+        .col-md-9 {
+            width: 70%;
+        }
+    }
+</style>
+
+<script type="text/javascript">
+    require(['jquery'],function($){
+        $('.option_value_list').click(function(){
+			var itemAdded = $(this).hasClass( "item_added" );
+			if (itemAdded == true){
+				$(this).removeClass('item_added');
+				var selectedOption = $(this).attr("optionval");
+				var selectedAttribute = $(this).attr("attcode");
+				$('#option_label_'+selectedOption).css("color", "#000");
+				$('#option_label_'+selectedOption).css("font-weight", "unset");			
+				$('#option_value_'+ selectedOption + ' img').css("border","none");
+				$('#option_value_'+ selectedOption + ' .without_image').css("border","1px solid #000");
+				$('#option_remove_'+ selectedOption).hide();
+				//$('#custom_search_form #'+selectedAttribute).remove();
+				$("#custom_search_form #"+selectedAttribute+" option[value='"+selectedOption+"']").remove();
+				var optionLength =  $('#'+selectedAttribute+' option').length;
+				
+				var filteredValue = $('#attribute_values_'+selectedAttribute).val();
+				filteredValue = filteredValue.replace(selectedOption,'');
+				$('#attribute_values_'+selectedAttribute).val(filteredValue);
+				
+				var newval = $('#attribute_values_'+selectedAttribute).val();
+				if(newval == " " || newval == ""){
+					$('#attribute_values_'+selectedAttribute).val('none');
+				}
+				
+			
+				if (optionLength == 0 || optionLength == '0') {
+					$('#custom_search_form #'+selectedAttribute).remove();
+				}
+				var formLength = $("#custom_search_form").find('input, select, textarea').length;
+				if (formLength == 0) {
+					var searchFormUrlAll = $('#search_form_url_all').val();
+					$('#custom_search_form').attr('action', searchFormUrlAll);
+					var attributeCount = $('#option_label_'+selectedOption).attr("attributecount");
+					$('#option_wrapper_'+attributeCount).removeClass('option_wrapper_bck');			
+				}
+			} else {
+				$(this).addClass('item_added');				
+				var selectedOption = $(this).attr("optionval");
+				var selectedAttribute = $(this).attr("attcode");
+				var selectedFieldType = $(this).attr("fieldtype");
+				var formSearchUrl = $('#search_form_url').val();
+				
+				var attribute_val = $('#attribute_values_'+selectedAttribute).val();
+				if (attribute_val == 'none') {
+					$('#attribute_values_'+selectedAttribute).val(selectedOption);
+				} else {
+					$('#attribute_values_'+selectedAttribute).val(attribute_val + ',' +selectedOption);
+				}
+				
+				/*var added_filter = $('#added_filter').val();
+				var initialUrl = $('#search_form_url_all').val();
+				if (added_filter == 'none') {
+					var newUrl = '?'+selectedAttribute+'='+selectedOption;
+					$('#added_filter').val(initialUrl+newUrl);
+				} else {
+					added_filter = added_filter + '&' +	selectedAttribute + '=' + selectedOption;
+					$('#added_filter').val(added_filter);
+				}*/
+				
+				
+				//var searchFormUrlAll = $('#search_form_url_all').val();
+				$('#custom_search_form').attr('action', formSearchUrl);
+				$('#option_label_'+selectedOption).css("color", "#ffae00");
+				var attributeCount = $('#option_label_'+selectedOption).attr("attributecount");
+				$('.option_wrapper').removeClass('option_wrapper_bck');
+				$('#option_wrapper_'+attributeCount).addClass('option_wrapper_bck');
+				$('#option_label_'+selectedOption).css("font-weight", "bold");
+				$('#option_value_'+ selectedOption + ' img').css("border","1px solid #ffae00");
+				$('#option_value_'+ selectedOption + ' .without_image').css("border","1px solid #ffae00");
+				//$('#option_value_'+selectedOption).css("padding","2%");
+				$('#option_remove_'+selectedOption).show();
+				$('.clear_all').show();
+				if($('#'+selectedAttribute).length) {
+					if(selectedFieldType == 'multiselect') {
+						$('#'+selectedAttribute).append('<option value="'+selectedOption+'" selected="selected">'+selectedOption+'</option>');
+					}
+					if(selectedFieldType == 'select') {
+						$('#'+selectedAttribute).append('<option value="'+selectedOption+'" selected="selected">'+selectedOption+'</option>');
+					}						
+				} else {
+					if(selectedFieldType == 'multiselect') {
+						$('#custom_search_form').append('<select id="'+selectedAttribute+'" name="'+selectedAttribute+'[]" multiple="multiple" style="display:none;"><option value="'+selectedOption+'" selected="selected">'+selectedOption+'</option></select>');
+					}
+					if(selectedFieldType == 'select') {
+						$('#custom_search_form').append('<select id="'+selectedAttribute+'" name="'+selectedAttribute+'" style="display:none;"><option value="'+selectedOption+'" selected="selected">'+selectedOption+'</option></select>');
+					}
+					
+					if(selectedFieldType == 'text') {			
+						$('#custom_search_form').append('<input id="'+selectedAttribute+'" name="'+selectedAttribute+'" type="text" value="'+selectedOption+'" style="display:none;"/>');
+					}
+					
+					if(selectedFieldType == 'textarea') {			
+						$('#custom_search_form').append('<textarea id="'+selectedAttribute+'" name="'+selectedAttribute+'" style="display:none;">'+selectedOption+'</textarea>');
+					}
+				}
+			}		
+		});
+		
+		$('.remove_item').click(function(){
+			var selectedOption = $(this).attr("optionval");
+			var selectedAttribute = $(this).attr("attcode");
+			$('#option_label_'+selectedOption).css("color", "#000");
+			$('#option_label_'+selectedOption).css("font-weight", "unset");			
+			$('#option_value_'+ selectedOption + ' img').css("border","none");
+			$('#option_value_'+ selectedOption).removeClass('item_added');
+			$('#option_value_'+ selectedOption + ' .without_image').css("border","1px solid #000");
+			$(this).hide();
+			//$('#custom_search_form #'+selectedAttribute).remove();
+			$("#custom_search_form #"+selectedAttribute+" option[value='"+selectedOption+"']").remove();
+			var optionLength =  $('#'+selectedAttribute+' option').length;
+			
+			var filteredValue = $('#attribute_values_'+selectedAttribute).val();
+			filteredValue = filteredValue.replace(selectedOption,'');
+			$('#attribute_values_'+selectedAttribute).val(filteredValue);
+			
+			if (optionLength == 0 || optionLength == '0') {
+				$('#custom_search_form #'+selectedAttribute).remove();
+			}
+			
+			var formLength = $("#custom_search_form").find('input, select, textarea').length;
+			if (formLength == 0) {
+			    var searchFormUrlAll = $('#search_form_url_all').val();
+			    $('#custom_search_form').attr('action', searchFormUrlAll);
+				var attributeCount = $('#option_label_'+selectedOption).attr("attributecount");
+				$('#option_wrapper_'+attributeCount).removeClass('option_wrapper_bck');			
+			}
+		});
+		
+		$('.clear_all').click(function(){
+			$('.option_value_list').removeClass('item_added');
+			$('.attribute_label').css("color", "#000");
+			$('.attribute_label').css("font-weight", "unset");
+			$('.remove_item').hide();
+			$("#custom_search_form").empty(); 
+			var searchFormUrlAll = $('#search_form_url_all').val();
+			$('#custom_search_form').attr('action', searchFormUrlAll);
+			$('.option_value_list img').css("border","none");
+			$('.option_value_list .without_image').css("border","1px solid #000");
+			$('.option_wrapper').removeClass('option_wrapper_bck');
+			
+			$(".custom_attribute_filter").each(function() {
+				var attributeId = $(this).val('none');
+			});
+			
+			$('#added_filter').val(filterUrl);
+		});
+		
+		$('#show_all_prod').click(function(){
+		    $.ajax({
+    			url: "http://decure.in/demo/buyingguide/index/session",
+    			type: "GET",
+    			contentType: false, 
+    			cache: false,
+    			processData:false, 
+    			success: function(result){
+    			
+    			}			
+    		});
+		});
+		
+		$('#show_products').click(function(){
+		    //$( "#custom_search_form" ).submit();
+			
+			$(".custom_attribute_filter").each(function() {
+				var attributeId = $(this).attr('id');
+				var attributeValues = $('#'+attributeId).val();
+				var selectedAttribute = $(this).attr("attcode");
+				var filteredData = $('#added_filter').val();
+				if (attributeValues != 'none') {
+					var firstChar = attributeValues.charAt(0);
+					var lastChar = attributeValues.substr(attributeValues.length - 1);
+					if (firstChar == ',')
+					{
+						attributeValues = attributeValues.substring(1, attributeValues.length);
+					}
+					 
+					if (lastChar == ',') {
+						attributeValues = attributeValues.slice(0,-1);
+					}
+					 
+					if(attributeValues.indexOf(",,") != -1){
+						attributeValues = attributeValues.replace(',,',',');
+					} 
+					var filterUrl = filteredData + selectedAttribute + '=' + attributeValues + '&';
+					$('#added_filter').val(filterUrl);
+				}
+			});
+				
+				
+			var filteredProductUrl = $('#added_filter').val();
+			window.location.href=filteredProductUrl;
+		});
+		
+		$('document').ready(function(){
+			var text = $('#catTypeCheck').val();
+			if (text == 'buyingguide') {
+				var title = $('#page-title-heading span').text();
+				$('#page-title-heading span').text(title + '- Buying Assist Menu');
+			}
+		});
+		
+		$('.title_option').click(function(){
+			var id = $(this).attr("attcode");
+			$('#attributes_wrapper_'+id).toggle();
+		});
+		
+		$('.optionName').click(function(){
+			var optionId = $(this).attr("optionid");
+			$('#option_value_'+optionId).trigger('click');
+		});
+    });
+</script>

@@ -1,0 +1,289 @@
+<?php
+
+/**
+
+ * Mageplaza
+
+ *
+
+ * NOTICE OF LICENSE
+
+ *
+
+ * This source file is subject to the Mageplaza.com license that is
+
+ * available through the world-wide-web at this URL:
+
+ * https://www.mageplaza.com/LICENSE.txt
+
+ *
+
+ * DISCLAIMER
+
+ *
+
+ * Do not edit or add to this file if you wish to upgrade this extension to newer
+
+ * version in the future.
+
+ *
+
+ * @category    Mageplaza
+
+ * @package     Mageplaza_LayeredNavigation
+
+ * @copyright   Copyright (c) 2017 Mageplaza (http://www.mageplaza.com/)
+
+ * @license     https://www.mageplaza.com/LICENSE.txt
+
+ */
+
+?>
+
+<?php 
+			
+		$moduleName = $this->getRequest()->getModuleName();
+        $controller = $this->getRequest()->getControllerName();
+        $action     = $this->getRequest()->getActionName();
+        if ($moduleName == "catalog" && $controller == "category" && $action == "view") {     
+           $customCss = "";    
+		   $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+		   $category = $objectManager->get('Magento\Framework\Registry')->registry('current_category');//get current category
+		   $showAllUrl = "http://decure.in/catalog/category/view/id/".$category->getId()."/s/a";
+		   $allParam  = $block->getRequest()->getParam('s');
+		   if($category->getEnableBuyingAssistance() && $category->getId() && $allParam != 'a') {
+		       $customCss = "style='padding:20px 0px !important'";
+		   } 
+   ?>
+   <?php 
+		   $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+		   $category = $objectManager->get('Magento\Framework\Registry')->registry('current_category');//get current category
+		   
+		   if($category->getEnableBuyingAssistance() && $category->getId() && $allParam != 'a') {?>
+    <div class="block filter custom_block" <?php echo $customCss;?>>
+			<button type="submit" id="show_products">Show Shortlisted Products</button>
+			<button type="button" id="show_all_prods" onclick="location.href = '<?php echo  $showAllUrl;?>';">Skip Buying Assist</button>
+			<br><br>
+			<div class="clear_all">Clear All</div>
+		   <?php
+		        $category->getId();
+				$category->getEnableBuyingAssistance();
+				$category->getBuyingAssistanceLayout();
+				//Adding Connections
+				$resource = $objectManager->get('Magento\Framework\App\ResourceConnection');
+				$connection = $resource->getConnection();
+				//End
+				$display = [];
+				foreach($category->getSetsForBuyingGuide() as $attributeSetId){					
+					$sql = "SELECT * FROM eav_entity_attribute eea
+					INNER JOIN eav_attribute e ON eea.attribute_id = e.attribute_id
+					WHERE eea.attribute_set_id = ".$attributeSetId." ORDER BY e.sort_order_n ASC";
+					$allSetsAttributes = $connection->fetchAll($sql); 
+					foreach ($allSetsAttributes as $setAttribute) {
+						$attributeId = $setAttribute['attribute_id'];
+						$sql = "SELECT * FROM eav_attribute e 
+						WHERE e.attribute_id = ".$attributeId." AND e.use_in_byuing_guide = 1 ORDER BY sort_order_n ASC";
+						/*echo '<br>'.$sql = "SELECT e.*,o.*,ov.* FROM eav_attribute e 
+						INNER JOIN eav_attribute_option o ON e.attribute_id = o.attribute_id
+						INNER JOIN eav_attribute_option_value ov ON ov.option_id = o.option_id
+						WHERE e.attribute_id = ".$attributeId." AND o.attribute_id = ".$attributeId;*/
+						$result = $connection->fetchAll($sql);
+						if(count($result) > 0){
+							foreach ($result as $attributeDetails) {
+								//$display['attribute_id'][] = $attributeDetails['attribute_id'];
+								$sql = "SELECT o.*,ov.* FROM eav_attribute_option o
+								INNER JOIN eav_attribute_option_value ov ON ov.option_id = o.option_id
+								WHERE ov.store_id = 2 AND o.attribute_id = ".$attributeDetails['attribute_id']." ORDER BY o.sort_order ASC";
+								$result = $connection->fetchAll($sql);
+								if(count($result) > 0){
+									$display['attribute_id']['attribute_option'][$attributeId] = $result;	
+									$display['attribute_id']['attribute_option'][$attributeId]['dis_label'] = 	$attributeDetails['frontend_label'];
+									$display['attribute_id']['attribute_option'][$attributeId]['attribute_code'] = 	$attributeDetails['attribute_code'];
+									$display['attribute_id']['attribute_option'][$attributeId]['frontend_input'] = 	$attributeDetails['frontend_input'];
+									$display['attribute_id']['attribute_option'][$attributeId]['narration'] = 	$attributeDetails['narration'];
+									$display['attribute_id']['attribute_option'][$attributeId]['additional_description'] = 	$attributeDetails['additional_description'];
+								}
+							}							
+						}
+					}
+				}	
+				
+				if(isset($display['attribute_id'])) {
+					foreach ($display as $key => $attributeDetails){
+						foreach ($attributeDetails as $attributeId => $attributeOptions) {
+							$i = 0;
+							foreach ($attributeOptions as $optionKey => $optionDetails) {
+								$i++
+								/*echo '<pre>-------------KEY 111111111111 --------------<br>';
+								print_r($optionKey);
+								
+								echo '<pre>-------------VAL 111111111111 --------------<br>';
+								print_r($optionDetails);*/
+								
+							?>
+								<div class="option_wrapper" id="option_wrapper_<?php echo $i;?>">
+									<div class="title_option" attcode="<?php echo $optionDetails['attribute_code'];?>"><?php echo $optionDetails['dis_label'];?></div>
+									<input type="hidden" id="<?php echo 'attribute_values_'.$optionDetails['attribute_code'];?>" class="custom_attribute_filter" value="none" attcode="<?php echo $optionDetails['attribute_code'];?>"/>
+									<div class="attributes_wrapper" id="attributes_wrapper_<?php echo $optionDetails['attribute_code'];?>">
+								<?php
+									foreach ($optionDetails as $key => $optionValues) {
+										if (isset($optionValues['use_in_guide'])) {
+											if ($optionValues['use_in_guide'] != '0' || $optionValues['use_in_guide'] != 0) {
+												if (isset($optionValues['value'])) {
+													echo '<div class="attribute_label" id="option_label_'.$optionValues['option_id'].'" attcode="'.$optionDetails['attribute_code'].'" attributeCount='.$i.'><span class="optionName" optionid='.$optionValues['option_id'].'>'.$optionValues['value'].'</span><div class="remove_item" optionval="'.$optionValues['option_id'].'" id="option_remove_'.$optionValues['option_id'].'" attcode="'.$optionDetails['attribute_code'].'">Remove</div></div>';
+												}									
+											}
+										}	
+									}
+								?>
+									</div>
+								</div>
+							<?php
+							}							
+						}
+					}
+				}
+			?>
+			<input type="hidden" id="search_form_url" value="<?php echo $block->getUrl('catalogsearch/advanced/result');?>"/>
+			<input type="hidden" id="search_form_url_all" value="<?php echo  $showAllUrl;?>"/>
+			<input type="hidden" id="added_filter" value="<?php echo  $showAllUrl.'?';?>"/>
+				<form id="custom_search_form" class="form search advanced" action="<?php echo  $showAllUrl;?>" method="get" id="form-validate" novalidate="novalidate" style="disply:none;">
+				</form>
+				
+				<style>
+				    .custom_block {
+                        padding: 20px 0px !important;
+                    }
+				</style>
+	 </div>
+	 <style>
+button
+{
+	background:#ffae00 !important;
+	text-transform: capitalize !important;
+	color: #080808 !important;
+	font-weight: bold !important;
+	font-size:10px !important; 
+}
+.main-content .sidebar .block {
+    padding: 20px 0px;
+}
+.option_wrapper
+{
+	padding: 3%;
+	color: #000;
+	width: 100%;
+}
+.option_wrapper_bck 
+{
+	background: #dbdbdb;
+	    
+}
+.title_option
+{
+	width: 100%;
+	font-weight: bold;
+	cursor:pointer;
+}
+.clear_all
+{
+	float: right;
+    width: 100%
+    text-align: right;
+	display:none;
+	cursor:pointer;
+}
+.attributes_wrapper
+{
+	width: 100%;
+}
+.attribute_label
+{
+	width: 100%;
+	cursor:pointer;
+}
+.remove_item
+{
+	float: right;
+    width: 20%;
+    text-align: right;
+	color:#ffae00;
+	cursor:pointer;
+	display:none;
+	font-weight:bold;
+}
+
+#show_products{
+		float:left;
+	}	
+	#show_all_prods{
+		float:right;
+	}
+
+
+/* Smartphones (portrait and landscape) ----------- */
+@media only screen and (min-device-width : 320px) and (max-device-width : 480px) 
+	{
+        .attributes_wrapper
+		{
+            display:none;
+		}
+		.custom_attribute_ul li
+		{
+			width: 50% !important;
+		}
+		.description_data
+		{
+			width: 100%;
+			margin: 0 auto;
+		}
+    }
+	
+@media only screen and (min-device-width : 400px) and (max-device-width : 700px) {
+        #show_products{
+			float:left;
+			margin: 0;
+		}	
+		#show_all_prods{
+			float:left;
+			margin:0 2%;
+		}
+    }	
+</style>
+			<?php	
+		   } else {?>
+			   <div id="layered-filter-block-container" class="layered-filter-block-container">
+
+    <?php echo $block->getChildHtml() ?>
+
+</div>
+
+<div id="ln_overlay" class="ln_overlay">
+
+    <div class="loader">
+
+        <img src="<?php echo $block->getViewFileUrl('images/loader-1.gif'); ?>" alt="Loading...">
+
+    </div>
+
+</div>
+			<?php }
+		} else {
+			    
+		?>
+<div id="layered-filter-block-container" class="layered-filter-block-container">
+
+    <?php echo $block->getChildHtml() ?>
+
+</div>
+
+<div id="ln_overlay" class="ln_overlay">
+
+    <div class="loader">
+
+        <img src="<?php echo $block->getViewFileUrl('images/loader-1.gif'); ?>" alt="Loading...">
+
+    </div>
+
+</div>
+<?php } ?>

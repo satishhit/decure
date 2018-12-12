@@ -1,0 +1,127 @@
+/*
+*   Owl Carousel Owl Demo Theme 
+*   v1.3.3
+*/
+
+.owl-theme .owl-controls{
+    margin-top: 10px;
+    text-align: center;
+}
+
+/* Styling Next and Prev buttons */
+
+.owl-theme .owl-controls .owl-buttons div{
+    color: #FFF;
+    display: inline-block;
+    zoom: 1;
+    margin: 5px;
+    padding: 3px 10px;
+    font-size: 12px;
+    /* -webkit-border-radius: 30px; */
+    -moz-border-radius: 30px;
+    /* border-radius: 30px; */
+    /* background: #869791; */
+    filter: Alpha(Opacity=50);
+    opacity: 1;
+    background-size: 15px;
+    background-repeat: no-repeat;
+    background-position-y: 5px;
+    border: 1px solid rgba(193, 193, 193, 0.82);
+    width: 20px;
+    margin-left: 23px;
+    background-position-x: 12px;
+    height: 20px;
+}
+/* Clickable class fix problem with hover on touch devices */
+/* Use it for non-touch hover action */
+.owl-theme .owl-controls.clickable .owl-buttons div:hover{
+    filter: Alpha(Opacity=100);/*IE7 fix*/
+    opacity: 1;
+    text-decoration: none;
+}
+
+/* Styling Pagination*/
+
+.owl-theme .owl-controls .owl-page{
+    display: inline-block;
+    zoom: 1;
+    *display: inline;/*IE7 life-saver */
+}
+.owl-theme .owl-controls .owl-page span{
+    display: block;
+    width: 12px;
+    height: 12px;
+    margin: 5px 7px;
+    filter: Alpha(Opacity=50);/*IE7 fix*/
+    opacity: 0.5;
+    -webkit-border-radius: 20px;
+    -moz-border-radius: 20px;
+    border-radius: 20px;
+    background: #869791;
+}
+
+.owl-theme .owl-controls .owl-page.active span,
+.owl-theme .owl-controls.clickable .owl-page:hover span{
+    filter: Alpha(Opacity=100);/*IE7 fix*/
+    opacity: 1;
+}
+
+/* If PaginationNumbers is true */
+
+.owl-theme .owl-controls .owl-page span.owl-numbers{
+    height: auto;
+    width: auto;
+    color: #FFF;
+    padding: 2px 10px;
+    font-size: 12px;
+    -webkit-border-radius: 30px;
+    -moz-border-radius: 30px;
+    border-radius: 30px;
+}
+
+/* preloading images */
+.owl-item.loading{
+    min-height: 150px;
+    background: url(AjaxLoader.gif) no-repeat center center
+}
+    .owl-carousel {
+        margin: 0;
+    }
+
+    .owl-carousel .owl-nav [class*=owl-] {
+        background: rgba(0, 0, 0, 0.5);
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 11px;
+        width: 30px;
+        height: 30px;
+        line-height: 30px;
+        border-radius: 0;
+        text-align: center;
+    }
+
+    .owl-carousel .owl-nav [class*=owl-]:hover {
+        background: rgba(0, 0, 0, 0.9);
+        color: #FFF;
+    }
+
+    .owl-carousel .owl-prev,
+    .owl-carousel .owl-next {
+        position: absolute;
+        top: 10px;
+        height: 30px;
+        margin: auto !important;
+    }
+
+    .owl-carousel .owl-prev {
+        right: 45px;
+        background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAADeUlEQVRoQ82aX07iUBTGz62WYqKIISGBF0EkxBiwwwrYgUuA2YGzA2cFzg5kdjBLcBZg6PholBCIxhgNnQceirR3cgydoEE4p+2t8Gpbv9/50/PdeyvgE3/1ev1cCGECQOPy8vJvECkiyE1R3IPipZSt6bNshOh0On+4z/4UANM0zwDg5J1YhDixLOsnByJ2ANM0m1LK9kcipZSnV1dX36kQsQLUarUmAHwo3hcthGivr6+fUPoiNoBqtXoMAL8okRVCWLqukxo7FoDDw8MjIcQFAKQJAJZhGCTx+CzlACgeAMjik8kkWbxygIODg10sB2rkNzY2WOKVAuzt7W0bhoGRx0G17NdzHMfsdrvsYaakhFC8rusX0ym7ULyU0pZSNq6vr9lDTFkGKpVKhxj5UOKVAJTL5XMA8C3CoujbQojAkf8/M5YVJ+fvpVIJzRlJvKZpocVHmoH9/f0zKeV7fzOXHyN/c3PzmxOcj66NpIlLpdJCfzP7zzFDt7e3LMO2CDQ0QKFQaKJ3oUQT7XOv14tMfOgSKhQKZH+DjR21+FAAxWLxyPM8kkXAslEhPjAAinddlyQeAH70+/1vlBILcg27B4rF4u5kMqH6m/ZgMPgaRBj1HhYAWoTxeEzyN7jquru7UyqeVUIo3nEcknhcdcUhngWQz+ep/qZ9f3+vPPJsK5HL5UgAOBNWEmBnZ2c7kUiQLDKW0MPDQyxZYDWxD0GxytjEj4+PyiFYAFh3uVxu13Vd8mtUNQQbACGy2Sx5CuMge3p6Wp1B5nc/QjCmcev5+TlSE8d+C82bjJlM5lhKSd2sUgIRqIRmYTKZTNPzPLKdtm070kyEBkCYdDpN2vOcgreihIgEAIWlUqkzIQR5SWnb9uosKf2SSqVS5B0JXNTbth1oL+jNEpVqW6nXbW1tkSE8z2uMRqNQEJGV0Czg5uYmyTcBwOvGVhgIJQBoOajrBoTA87GgEEoAMBsIwVg/9AzDMIfD4Wps7vrllEwmWdvreDbAhVCWAR9C1/UjTdPQhi89nZFSWo7jNACAnAnlAAjiQ1APOjgQsQAgRCKR4GyCWePx+Avl1R0bwDQTVMvRfnl5wam+tJRiBUCItbW1hRBCiNPJZLKaB91+SWiaNvdTA/RSruuy3GrsGZiBePOxB05kAGDbik8DmIKgb3r93IZS7/Oa+h9IdVtAvPrS1QAAAABJRU5ErkJggg==);
+    }
+
+    .owl-carousel .owl-next {
+        right: 0px;
+        background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAADiUlEQVRoQ82aXU7bQBSF7zghRuIhRqAoAoEiQDySRCygWQI7iLuDdgV0B80OoEvoDlgBnYIQQhASXoiEFOEGHpIYPNVJMaIV1HfGPySvmZ/zzb32PTNjQTF+29vbRSI6UErJw8PDjzGGMu4qTHvW6/UqxBORgzGEEPvvAWEEUKvVmkTUCsW/WISWlPKz6aKY9NMG2Nra2hVCfHlrMiGEK6X8ZiLGpA8bAPn+8PDQUkq5jInco6OjTCC0AHzfxwNbYwCgyc7x8fF3ZlvjZmwAzIAojEYjPLgcCE8p1Tg5OflprI7RUQsghBgOh2wIIkoVQhsAEGtra8XZ2Vk2BNLu9PT0irGg2k2MAEII27YlEVUYs8rRaNS4vLz8xWir1cQYALNsbm5WhRAHQohJMfvfD9Xa9/3EIWIBvIR4pai9xiPPzs7qUbA6/8cGCCGUUs+2IkLA/vn5eWK+KRGAECIIAhaEUmq/3W4nApEYACA2NjY+PEUiMguEEK2Li4vYvilRAKheX19vYoUjCf44WLfdbseyHIkDQHilUmnCXnMg4K263a4xRCoAIQQRsSDgm7rdrpFvSg0ghGCmk2dZVqPT6Wj7plQBALG6uvqViD4x0snL5XLaEKkDQPjKysoeEXH2EV4+n691Oh22b8oEABDLy8t7eOswIiELhQLbcmQGEEIwIyFt22ZBZAoAiKWlJW46yevr60jf9C4AzH217PV60wVQLpdZqw/rPR6PG7e3t5H7h8wiUCqV2A8xVzxSMhMAiGc+vKgFtV6vNz2v0cXFRXYhQzW+ubnRqsapRmBhYQFHkBw/NKnCuuJTTSGIZ/og2Oqdfr8/PWbOcRy2nbYsy+33+9NjpyGemTbIANfzPGPxiaeQ4zjsLaVSqjUYDKZnS+k4TpW7qUeEBoPB9Gzq5+bmqpZlsU4kIP7u7i4R8YmkEMTjdI57sHV/fx/pbxiW+7lJrDoA8S/vySImnvh8jr/JBGB+fh53BezDXfj7pMUbpxDE69wR4Hh9OByy/U3aESjato0T6chbGqWUFwRBw/d9LX+TJsBEPPeKKW3x2ilUKBR+MMVj7J3xeGzkb9KKQHFmZgaX25yTBdf3/VgWgQuh/RrN5/O7Sqk3L7oB+Pj4mIl47RQKVyWXy8Eqv/qpQRAEsf0Nd/WNAZ4m+KsC4zQ6CILELAIXQjuF/hl48rkNEaGgZS4eWn4D5vtqQKsN9aAAAAAASUVORK5CYII=);
+    }
+
+    .owl-carousel .owl-dots {
+        display: none !important;
+    }
