@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<config>
-    <preference for="Bss\ProductAttributesImportExport\Model\Export\ProductAttributes" type="Bss\BssProductAttributesCustomize\Model\Export\ProductAttributes" />
-</config>

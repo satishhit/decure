@@ -1,36 +1,0 @@
-<?xml version="1.0"?>
-<!--
-/**
- * Copyright © 2015 Magento. All rights reserved.
- * See COPYING.txt for license details.
- */
--->
-<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
-    <body>
-        <referenceContainer name="page.top">
-			<block class="Plazathemes\Bannerslider\Block\Bannerslider" name="Banner" template="bannerslider.phtml"/>	
-        </referenceContainer>
-		<referenceContainer name="main.content">  
-			<block class="Magento\Cms\Block\Block" name="static_top" before="-">
-				<arguments>
-					<argument name="block_id" xsi:type="string">static_top_gicor3</argument>
-				</arguments>
-			</block>
-			<block class="Magento\Cms\Block\Block" name="corporate" after="static_top">
-				<arguments>
-					<argument name="block_id" xsi:type="string">corporate</argument>
-				</arguments>
-			</block>
-			<block class="Magento\Cms\Block\Block" name="category_tab" after="corporate">
-				<arguments>
-					<argument name="block_id" xsi:type="string">category_tab</argument>
-				</arguments>
-			</block>
-			<block class="Magento\Cms\Block\Block" name="static_middle" after="category_tab">
-				<arguments>
-					<argument name="block_id" xsi:type="string">static_middle_gicor3</argument>
-				</arguments>
-			</block>
-		</referenceContainer> 
-    </body>
-</page>
